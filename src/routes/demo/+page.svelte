@@ -156,8 +156,8 @@
 </script>
 
 <main class="flex flex-col items-center">
-	<div class="mx-4 mt-8 flex min-h-fit w-11/12 flex-col items-center border p-4">
-		<div class="mb-4 flex w-full flex-row items-center justify-between gap-1.5">
+	<div class="mx-4 mt-8 flex min-h-fit w-11/12 flex-col items-center p-4">
+		<div class="mb-4 flex w-full flex-col justify-between gap-1.5 sm:flex-row">
 			<!-- <Label for="Dataset">Click here to upload your dataset</Label> -->
 			<Input
 				id="picture"
@@ -170,6 +170,7 @@
 			<Button on:click={handleAnonymizeData} class=" w-44">Anonymize the Data</Button>
 			<Button on:click={handleDemoData} class=" w-44">Upload Demo Data</Button>
 		</div>
+
 		{#if userData.length}
 			<h1 class="mb-4 mt-6 w-full text-center font-bold">Your Dataset</h1>
 			<div class="max-h-96 w-full overflow-y-scroll object-cover p-4">
@@ -193,8 +194,6 @@
 					</Table.Body>
 				</Table.Root>
 			</div>
-		{:else}
-			<p class="text-center">No data to display</p>
 		{/if}
 		{#if anonymizedData.length > 0}
 			<!-- to do -->
@@ -220,10 +219,10 @@
 					</Table.Body>
 				</Table.Root>
 			</div>
+			<form class="flex w-full items-center space-x-2">
+				<Input type="text" placeholder="Type the column name to use as the target" class="w-full" />
+				<Button type="submit" class="w-48">Enter</Button>
+			</form>
 		{/if}
-		<form class="flex w-full items-center space-x-2">
-			<Input type="text" placeholder="Type the column name to use as the target" class="w-full" />
-			<Button type="submit" class="w-48">Enter</Button>
-		</form>
 	</div>
 </main>
