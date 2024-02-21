@@ -53,6 +53,26 @@
 		}
 	};
 
+	const handleDemoData = async () => {
+		try {
+			let response = await fetch('/demo/breast-cancer.csv');
+
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+
+			let csvData = await response.text();
+
+			originalCSV = csvData;
+
+			jsonArray = await csvtojson().fromString(csvData as string);
+			userData = objectToStringArray(jsonArray);
+			features = getFeatures(jsonArray) as string[];
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	async function convertStringToCSV(file: string) {
 		const lines = file.split('\n');
 		const headers = lines[0].split(',');
@@ -139,14 +159,18 @@
 	<div class="mx-4 mt-8 flex min-h-fit w-11/12 flex-col items-center border p-4">
 		<div class="mb-4 flex w-full flex-row items-center justify-between gap-1.5">
 			<!-- <Label for="Dataset">Click here to upload your dataset</Label> -->
-			<Input id="picture" type="file" accept=".csv" on:input={handleGetFile} class="max-w-80" />
-			<Button on:click={handleAnonymizeData} class=" w-44">Anonymize data</Button>
+			<Input
+				id="picture"
+				type="file"
+				placeholder="Upload csv files here"
+				accept=".csv"
+				on:input={handleGetFile}
+				class="max-w-80"
+			/>
+			<Button on:click={handleAnonymizeData} class=" w-44">Anonymize the Data</Button>
+			<Button on:click={handleAnonymizeData} class=" w-44">Upload Demo Data</Button>
 		</div>
 		{#if userData.length !== 0}
-			<form class="flex w-full items-center space-x-2">
-				<Input type="text" placeholder="feature" class="w-full" />
-				<Button type="submit" class="w-48">Subscribe</Button>
-			</form>
 			<h1 class="mb-4 mt-6 w-full text-center font-bold">Raw Data</h1>
 			<div class="max-h-96 w-full overflow-y-scroll border-2 border-slate-200 object-cover p-4">
 				<Table.Root class="overflow-x-visible">
@@ -197,5 +221,9 @@
 				</Table.Root>
 			</div>
 		{/if}
+		<form class="flex w-full items-center space-x-2">
+			<Input type="text" placeholder="Type the column name to use as the target" class="w-full" />
+			<Button type="submit" class="w-48">Enter</Button>
+		</form>
 	</div>
 </main>
