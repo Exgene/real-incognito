@@ -53,6 +53,22 @@
 		}
 	};
 
+	function downloadAnonData() {
+		csvStringToFile(anonymizedStringArray, 'anomymized-data.csv');
+	}
+
+	function csvStringToFile(csvString, filename) {
+		const blob = new Blob([csvString], { type: 'text/csv' });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = filename;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		URL.revokeObjectURL(url);
+	}
+
 	const handleDemoData = async () => {
 		try {
 			let response = await fetch('/demo/breast-cancer.csv');
@@ -63,7 +79,11 @@
 
 			let csvData = await response.text();
 
-			originalCSV = csvData;
+			const filename = 'dataset.csv';
+			const blob = new Blob([csvData], { type: 'text/csv' });
+			originalCSV = new File([blob], filename, { type: blob.type });
+
+			console.log(originalCSV);
 
 			jsonArray = await csvtojson().fromString(csvData as string);
 			userData = objectToStringArray(jsonArray);
@@ -106,12 +126,18 @@
 
 		const url = 'https://anonymizer-mwnxl4smaa-el.a.run.app';
 
+		console.log(originalCSV);
+		console.log(formData);
+
+		alert('Anonymizing your data');
+
 		fetch(url, {
 			method: 'POST',
 			body: formData
 		})
 			.then((response) => {
 				if (!response.ok) {
+					console.log(response);
 					throw new Error('Network response was not ok');
 				}
 
@@ -156,7 +182,7 @@
 </script>
 
 <main class="flex flex-col items-center">
-	<div class="mx-4 mt-8 flex min-h-fit w-11/12 flex-col items-center p-4">
+	<div class="mx-4 mt-8 flex min-h-fit w-11/12 flex-col p-4">
 		<div class="mb-4 flex w-full flex-col justify-between gap-1.5 sm:flex-row">
 			<!-- <Label for="Dataset">Click here to upload your dataset</Label> -->
 			<Input
@@ -174,7 +200,7 @@
 		{#if userData.length}
 			<h1 class="mb-4 mt-6 w-full text-center font-bold">Your Dataset</h1>
 			<div class="max-h-96 w-full overflow-y-scroll object-cover p-4">
-				<Table.Root class="overflow-x-visible">
+				<Table.Root class="overflow-x-visible border">
 					<Table.Caption>A list of your recent invoices.</Table.Caption>
 					<Table.Header>
 						<Table.Row>
@@ -198,7 +224,7 @@
 		{#if anonymizedData.length > 0}
 			<!-- to do -->
 			<h1 class="mb-4 mt-6 w-full text-center font-bold">Anonymized Data</h1>
-			<div class="max-h-96 w-full overflow-y-scroll border-2 border-slate-200 object-cover p-4">
+			<div class="max-h-96 w-full overflow-y-scroll object-cover p-4">
 				<Table.Root>
 					<Table.Caption>A list of your recent invoices.</Table.Caption>
 					<Table.Header>
@@ -219,7 +245,8 @@
 					</Table.Body>
 				</Table.Root>
 			</div>
-			<form class="flex w-full items-center space-x-2">
+			<Button on:click={downloadAnonData} class="mt-4 w-56">Download anonymous data</Button>
+			<form class="mt-4 flex w-full items-center space-x-2">
 				<Input type="text" placeholder="Type the column name to use as the target" class="w-full" />
 				<Button type="submit" class="w-48">Enter</Button>
 			</form>
