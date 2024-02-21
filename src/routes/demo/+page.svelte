@@ -165,20 +165,20 @@
 				placeholder="Upload csv files here"
 				accept=".csv"
 				on:input={handleGetFile}
-				class="max-w-80"
+				class="w-full flex-1"
 			/>
 			<Button on:click={handleAnonymizeData} class=" w-44">Anonymize the Data</Button>
-			<Button on:click={handleAnonymizeData} class=" w-44">Upload Demo Data</Button>
+			<Button on:click={handleDemoData} class=" w-44">Upload Demo Data</Button>
 		</div>
-		{#if userData.length !== 0}
-			<h1 class="mb-4 mt-6 w-full text-center font-bold">Raw Data</h1>
-			<div class="max-h-96 w-full overflow-y-scroll border-2 border-slate-200 object-cover p-4">
+		{#if userData.length}
+			<h1 class="mb-4 mt-6 w-full text-center font-bold">Your Dataset</h1>
+			<div class="max-h-96 w-full overflow-y-scroll object-cover p-4">
 				<Table.Root class="overflow-x-visible">
 					<Table.Caption>A list of your recent invoices.</Table.Caption>
 					<Table.Header>
 						<Table.Row>
 							{#each features as feature, i (i)}
-								<Table.Head class="font-bold text-black">{feature}</Table.Head>
+								<Table.Head class="font-bold">{feature}</Table.Head>
 							{/each}
 						</Table.Row>
 					</Table.Header>
